@@ -124,11 +124,15 @@ const Booking = () => {
                   <div
                     key={idx}
                     className={`calendar-day${isPast ? ' past' : isBooked ? ' booked' : ' available'}${isSelected ? ' selected' : ''}`}
-                    title={isPast ? 'Past date' : isBooked ? 'Already booked' : 'Available'}
-                    style={{ cursor: isPast || isBooked ? 'not-allowed' : 'pointer' }}
-                    onClick={() => handleDateClick(day)}
+                    title={`Date: ${dateStr}\n${isPast ? 'Past date' : isBooked ? 'Already booked' : 'Available'}${isSelected ? '\nSelected' : ''}`}
+                    style={{ cursor: isPast || isBooked ? 'not-allowed' : 'pointer', border: isSelected ? '2px solid #0070f3' : undefined }}
+                    onClick={() => {
+                      console.log('Clicked:', dateStr, 'isPast:', isPast, 'isBooked:', isBooked);
+                      handleDateClick(day);
+                    }}
                   >
                     {day.getDate()}
+                    {isSelected && <span style={{ color: '#0070f3', fontWeight: 'bold' }}> ✓</span>}
                   </div>
                 );
               })}
