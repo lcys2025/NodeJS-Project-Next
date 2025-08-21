@@ -46,8 +46,8 @@ const Login = () => {
         <title>Login - Gym Fitness</title>
       </Head>
       <NavBar />
-      <div className="login-container">
-        <div className="login-box">
+      <div className="login-container" style={{width: '100vw', minHeight: '100vh', margin: 0, padding: 0}}>
+        <div className="login-box" style={{width: '100vw', borderRadius: 0, margin: 0, boxSizing: 'border-box'}}>
           <h2>會員登入</h2>
           <form id="loginForm" ref={formRef} onSubmit={handleSubmit}>
             <input type="email" name="email" id="email" placeholder="Email" required />
@@ -61,8 +61,8 @@ const Login = () => {
       </div>
       <style>{`
         body { background-color: #255b70; font-family: Helvetica, sans-serif; color: #fff; }
-        .login-container { display: flex; justify-content: center; align-items: center; height: 100vh; }
-        .login-box { background-color: #000; padding: 2rem; border-radius: 10px; width: 320px; text-align: center; border: 2px solid #ffd700; }
+  .login-container { width: 100vw; min-height: 100vh; margin: 0; padding: 0; }
+  .login-box { background-color: #000; padding: 2rem; border-radius: 0; width: 100vw; text-align: center; border: 2px solid #ffd700; margin: 0; box-sizing: border-box; }
         .login-box h2 { color: #ffd700; margin-bottom: 1rem; }
         .login-box form { display: flex; flex-direction: column; align-items: stretch; }
         .login-box input, .login-box button { width: 100%; padding: 0.7rem; margin: 0.5rem 0; border-radius: 5px; border: none; box-sizing: border-box; }

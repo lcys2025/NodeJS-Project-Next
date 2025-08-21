@@ -132,7 +132,7 @@ const Booking = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
       <NavBar />
-      <div className="booking-container" style={{ maxWidth: 600, margin: '2rem auto', background: '#222', borderRadius: 12, padding: '2rem', color: '#fff' }}>
+  <div className="booking-container" style={{ width: '100vw', minHeight: '80vh', background: '#222', borderRadius: 0, padding: '2rem 0', color: '#fff', boxSizing: 'border-box', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '2rem' }}>Book a Training Session</h2>
         <form className="booking-form" onSubmit={handleSubmit}>
           <div className="form-group">
@@ -157,15 +157,16 @@ const Booking = () => {
               <div style={{ fontWeight: 'bold', fontSize: '1.1rem' }}>{currentDate.toLocaleString('default', { month: 'long', year: 'numeric' })}</div>
               <button type="button" onClick={handleNextMonth}>Next →</button>
             </div>
-            <div className="calendar">
+            <div className="calendar" style={{ width: '100%', maxWidth: '900px', padding: 0, margin: '0 auto', boxSizing: 'border-box' }}>
               {/* Weekday headers and calendar grid in one parent */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', width: '100%', padding: 0, margin: 0 }}>
                 {/* Weekday headers: always first row */}
                 {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => (
-                  <div key={day} style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '0.5rem' }}>{day}</div>
+                  <div key={day} style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: 0 }}>{day}</div>
                 ))}
                 {/* Add empty cells for days before the first day of month */}
                 {(() => {
+                  if (!calendarDays.length) return null;
                   const firstDayOfWeek = calendarDays[0].getDay(); // 0=Sun, 1=Mon...
                   // We want Monday as first column, so shift Sunday (0) to last
                   const offset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
@@ -190,7 +191,9 @@ const Booking = () => {
                         minHeight: '2.5em',
                         display: 'flex',
                         alignItems: 'center',
-                        justifyContent: 'center'
+                        justifyContent: 'center',
+                        padding: 0,
+                        margin: 0
                       }}
                       onClick={() => {
                         if (isPast || isBooked) return;
