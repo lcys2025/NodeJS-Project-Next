@@ -38,8 +38,15 @@ const Booking = () => {
 
   useEffect(() => {
     if (selectedTrainer) {
-      // TODO: Replace with real API for trainer availability
-      setBookedDates([]); // No booked dates for demo
+      // Fetch booked dates for selected trainer and month
+      const year = currentDate.getFullYear();
+      const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      const monthStr = `${year}-${month}`;
+      fetch(`/api/bookingAvailability?trainerId=${selectedTrainer}&month=${monthStr}`)
+        .then(res => res.json())
+        .then(data => setBookedDates(data.bookedDates || []));
+    } else {
+      setBookedDates([]);
     }
   }, [selectedTrainer, currentDate]);
 
@@ -162,13 +169,19 @@ const Booking = () => {
                     key={idx}
                     className={`calendar-day${isPast ? ' past' : isBooked ? ' booked' : ' available'}${isSelected ? ' selected' : ''}`}
                     title={`Date: ${dateStr}\n${isPast ? 'Past date' : isBooked ? 'Already booked' : 'Available'}${isSelected ? '\nSelected' : ''}`}
-                    style={{ cursor: isPast || isBooked ? 'not-allowed' : 'pointer', border: isSelected ? '2px solid #0070f3' : undefined }}
+                    style={{
+                      cursor: isPast || isBooked ? 'not-allowed' : 'pointer',
+                      border: isSelected ? '2px solid #0070f3' : undefined,
+                      background: isBooked ? '#b91c1c' : undefined,
+                      color: isBooked ? '#fff' : undefined
+                    }}
                     onClick={() => {
-                      console.log('Clicked:', dateStr, 'isPast:', isPast, 'isBooked:', isBooked);
+                      if (isPast || isBooked) return;
                       handleDateClick(day);
                     }}
                   >
                     {day.getDate()}
+                    {isBooked && <span style={{ color: '#fff', fontWeight: 'bold' }}> ✗</span>}
                     {isSelected && <span style={{ color: '#0070f3', fontWeight: 'bold' }}> ✓</span>}
                   </div>
                 );

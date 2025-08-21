@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     const end = new Date(year, monthNum, 0, 23, 59, 59, 999);
     const bookings = await Booking.find({ trainerId, bookingDate: { $gte: start, $lte: end } });
     const bookedDates = bookings.map(b => b.bookingDate.toISOString().slice(0, 10));
-    res.status(200).json({ success: true, data: { bookedDates } });
+  res.status(200).json({ bookedDates });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

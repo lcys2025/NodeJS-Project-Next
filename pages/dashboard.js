@@ -79,8 +79,26 @@ const Dashboard = () => {
             <h2>Quick Actions</h2>
             <div className="actions">
               <a href="/booking" className="btn primary">Book New Session</a>
-              <a href="/booking?trial=true" className="btn accent" style={{ marginLeft: '1rem' }}>Book a Free Trial</a>
               <a href="/bookings" className="btn secondary" style={{ marginLeft: '1rem' }}>View All Bookings</a>
+              {(() => {
+                // Calculate number of bookings in current week
+                const now = new Date();
+                const startOfWeek = new Date(now);
+                startOfWeek.setDate(now.getDate() - now.getDay());
+                startOfWeek.setHours(0,0,0,0);
+                const endOfWeek = new Date(startOfWeek);
+                endOfWeek.setDate(startOfWeek.getDate() + 6);
+                endOfWeek.setHours(23,59,59,999);
+                const weeklyBookings = (data.bookings || []).filter(b => {
+                  const d = new Date(b.bookingDate);
+                  return d >= startOfWeek && d <= endOfWeek;
+                });
+                if (weeklyBookings.length > 3) {
+                  return <a href="/booking?trial=true" className="btn accent" style={{ marginLeft: '1rem' }}>Book a Free Trial</a>;
+                } else {
+                  return <span className="btn accent disabled" style={{ marginLeft: '1rem', opacity: 0.5, pointerEvents: 'none' }} title="Book more than 3 sessions in a week to unlock free trial">Book a Free Trial</span>;
+                }
+              })()}
             </div>
           </div>
 
