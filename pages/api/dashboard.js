@@ -41,7 +41,7 @@ export default async function handler(req, res) {
     }
     // TODO: Add calendar data logic here
     res.status(200).json({
-      user: { name: user.name, email: user.email, role: user.role, plan: user.plan, remainingTrainerDays: user.remainingTrainerDays },
+  user: { _id: user._id, name: user.name, email: user.email, role: user.role, plan: user.plan, remainingTrainerDays: user.remainingTrainerDays },
       bookings,
       trainers,
       calendar: null // Placeholder for calendar picker data

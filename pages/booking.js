@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import NavBar from '../components/NavBar';
 
@@ -11,6 +12,7 @@ function formatDate(date) {
 }
 
 const Booking = () => {
+  const router = useRouter();
   const [trainers, setTrainers] = useState([]);
   const [selectedTrainer, setSelectedTrainer] = useState('');
   const [selectedDate, setSelectedDate] = useState(null);
@@ -24,8 +26,15 @@ const Booking = () => {
   useEffect(() => {
     fetch('/api/trainers')
       .then(res => res.json())
-      .then(data => setTrainers(data.trainers || []));
-  }, []);
+      .then(data => {
+        setTrainers(data.trainers || []);
+        // If ?trainer= is present in query, preset selectedTrainer
+        const trainerId = router.query.trainer;
+        if (trainerId && data.trainers.some(t => t._id === trainerId)) {
+          setSelectedTrainer(trainerId);
+        }
+      });
+  }, [router.query.trainer]);
 
   useEffect(() => {
     if (selectedTrainer) {
@@ -74,11 +83,39 @@ const Booking = () => {
       setStatus('Please select a date');
       return;
     }
-    // TODO: Replace with real booking API
-    setStatus('Booking created successfully!');
-    setTimeout(() => {
-      window.location.href = '/dashboard?booking=success';
-    }, 1200);
+    setStatus('Booking...');
+    try {
+      // Get userId from session cookie via dashboard API
+      const userRes = await fetch('/api/dashboard');
+      const userData = await userRes.json();
+      if (!userData.user || !userData.user._id) {
+        setStatus('User not found. Please login again.');
+        return;
+      }
+      const bookingPayload = {
+        userId: userData.user._id,
+        trainerId: selectedTrainer,
+        bookingDate: formatDate(selectedDate),
+        sessionType,
+        notes
+      };
+      const res = await fetch('/api/booking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingPayload)
+      });
+      const result = await res.json();
+      if (res.status === 201 && result.success) {
+        setStatus('Booking created successfully!');
+        setTimeout(() => {
+          window.location.href = '/dashboard?booking=success';
+        }, 1200);
+      } else {
+        setStatus(result.error || 'Booking failed');
+      }
+    } catch (err) {
+      setStatus('Booking failed: ' + err.message);
+    }
   };
 
   return (
