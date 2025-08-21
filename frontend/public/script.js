@@ -53,7 +53,7 @@ async function handleFormSubmit(event) {
 
 	try {
 		// fetch API to submit the form data
-		const response = await fetch("/auth/register", {
+		const response = await fetch("/register", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -72,7 +72,7 @@ async function handleFormSubmit(event) {
 		if (response.ok) {
 			alert(`感謝你的申請，${name}！我們將透過 ${email} 聯絡你關於「${plan}」會員計劃。`);
 			event.target.reset();
-			window.location.href = "/auth/login";
+			window.location.href = "/login";
 		} else {
 			// registration failed
 			alert(`註冊失敗: ${result.message || "請稍後再試"}`);
@@ -99,7 +99,7 @@ async function handleLoginSubmit(event) {
 	}
 
 	try {
-		const response = await fetch("/auth/login", {
+		const response = await fetch("/login", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

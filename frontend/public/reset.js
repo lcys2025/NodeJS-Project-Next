@@ -41,7 +41,7 @@ async function handleResetPassword(e) {
 		if (responseData.success) {
 			alert("密碼重設成功！你將返回登入頁面。");
 			setTimeout(() => {
-				window.location.href = "/auth/login";
+				window.location.href = "/login";
 			}, 1500);
 		} else {
 			alert("密碼重設失敗！請稍後再試！");
@@ -54,5 +54,5 @@ async function handleResetPassword(e) {
 }
 
 function returnToLogin() {
-	window.location.href = "/auth/login";
+	window.location.href = "/login";
 }
