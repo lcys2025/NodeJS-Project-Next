@@ -79,7 +79,8 @@ const Dashboard = () => {
             <h2>Quick Actions</h2>
             <div className="actions">
               <a href="/booking" className="btn primary">Book New Session</a>
-              <a href="/bookings" className="btn secondary">View All Bookings</a>
+              <a href="/booking?trial=true" className="btn accent" style={{ marginLeft: '1rem' }}>Book a Free Trial</a>
+              <a href="/bookings" className="btn secondary" style={{ marginLeft: '1rem' }}>View All Bookings</a>
             </div>
           </div>
 
