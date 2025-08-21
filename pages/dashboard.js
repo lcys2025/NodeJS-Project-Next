@@ -23,9 +23,11 @@ const Dashboard = () => {
         }
         return res.json().then(json => ({ status: res.status, json }));
       })
-      .then(({ status, json }) => {
+      .then(result => {
+        if (!result) return; // Already redirected to login
+        const { status, json } = result;
         if (status !== 200) {
-          setError(json.error || 'Unknown error');
+          setError(json?.error || 'Unknown error');
         } else if (json && json.user) {
           setUser(json.user);
           setData(json);
