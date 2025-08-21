@@ -1,0 +1,124 @@
+/* Professional CSS for all pages, using Tailwind-inspired classes and custom fixes */
+
+body {
+  font-family: 'Inter', 'Lucida Grande', Helvetica, Arial, sans-serif;
+  line-height: 1.6;
+  background: #f7fafc;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #0056b3;
+}
+
+/* Highlight current page in nav */
+.nav-container a[href="<%= currentPath %>"] {
+  border-bottom: 2px solid #3498db;
+  font-weight: bold;
+}
+
+/* Tailwind CSS classes will be used for styling */
+
+body {
+  font-family: 'Inter', sans-serif;
+  line-height: 1.6;
+}
+
+.nav-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+  background: #fff;
+  padding: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.nav-container a {
+  margin: 0 1rem;
+  text-decoration: none;
+  color: #007bff;
+  font-weight: 500;
+}
+
+.nav-container a:hover {
+  color: #0056b3;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+header, footer {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  padding: 2rem 0;
+}
+
+h1, h2, h3, h4 {
+  color: #222;
+  font-family: 'Inter', 'Lucida Grande', Helvetica, Arial, sans-serif;
+}
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+p {
+  margin-bottom: 1rem;
+  color: #444;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.grid-cols-1 {
+  grid-template-columns: repeat(1, 1fr);
+}
+
+.md\:grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.lg\:grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding: 2rem;
+  }
+  h1 {
+    font-size: 3rem;
+  }
+  h2 {
+    font-size: 2.5rem;
+  }
+}

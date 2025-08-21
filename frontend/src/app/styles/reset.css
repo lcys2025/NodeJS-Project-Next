@@ -1,0 +1,41 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #255b70;
+  font-family: "Helvetica", sans-serif;
+  color: #fff;
+}
+
+.reset-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.reset-box {
+  background-color: rgb(0, 0, 0);
+  padding: 2rem;
+  border-radius: 10px;
+  width: 320px;
+  text-align: center;
+  border: 2px solid #ffd700;
+}
+
+.reset-box h2 {
+  color: #ffd700;
+  margin-bottom: 1rem;
+}
+
+.reset-box form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.reset-box input,
+.reset-box button {
+  width: 100%;
+  padding: 0.7rem;
+  margin: 0.5rem 0;
+}

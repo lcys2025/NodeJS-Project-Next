@@ -1,0 +1,14 @@
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
+/* Highlight current page in nav */
+.nav-container a[href="<%= currentPath %>"] {
+  border-bottom: 2px solid #3498db;
+  font-weight: bold;
+}

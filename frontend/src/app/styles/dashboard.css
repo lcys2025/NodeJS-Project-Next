@@ -1,0 +1,41 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #1f1f1f;
+  border-radius: 8px;
+  color: #fff;
+}
+
+.dashboard-section {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background-color: #2d2d2d;
+  border-radius: 8px;
+}
+
+.bookings-grid, .trainers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.booking-card, .trainer-card {
+  background-color: #3a3a3a;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border-left: 4px solid #ffd700;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  text-decoration: none;
+}
