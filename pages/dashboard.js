@@ -123,8 +123,31 @@ const Dashboard = () => {
                       <td>{booking.sessionType}</td>
                       <td className={`status-${booking.status}`}>{booking.status}</td>
                       <td>
-                        <form className="status-form">
-                          <select name="status" defaultValue={booking.status}>
+                        <form className="status-form" onSubmit={e => e.preventDefault()}>
+                          <select
+                            name="status"
+                            defaultValue={booking.status}
+                            onChange={async e => {
+                              const newStatus = e.target.value;
+                              try {
+                                const res = await fetch(`/api/bookingStatus`, {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ bookingId: booking._id, status: newStatus })
+                                });
+                                if (res.ok) {
+                                  setData(prev => {
+                                    const updatedBookings = prev.bookings.map(b =>
+                                      b._id === booking._id ? { ...b, status: newStatus } : b
+                                    );
+                                    return { ...prev, bookings: updatedBookings };
+                                  });
+                                }
+                              } catch (err) {
+                                alert('Failed to update status: ' + err.message);
+                              }
+                            }}
+                          >
                             <option value="pending">Pending</option>
                             <option value="confirmed">Confirmed</option>
                             <option value="completed">Completed</option>
