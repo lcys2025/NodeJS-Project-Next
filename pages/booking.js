@@ -158,34 +158,52 @@ const Booking = () => {
               <button type="button" onClick={handleNextMonth}>Next →</button>
             </div>
             <div className="calendar">
-              {/* Calendar grid */}
-              {calendarDays.map((day, idx) => {
-                const dateStr = formatDate(day);
-                const isPast = day < today;
-                const isBooked = bookedDates.includes(dateStr);
-                const isSelected = selectedDate && formatDate(selectedDate) === dateStr;
-                return (
-                  <div
-                    key={idx}
-                    className={`calendar-day${isPast ? ' past' : isBooked ? ' booked' : ' available'}${isSelected ? ' selected' : ''}`}
-                    title={`Date: ${dateStr}\n${isPast ? 'Past date' : isBooked ? 'Already booked' : 'Available'}${isSelected ? '\nSelected' : ''}`}
-                    style={{
-                      cursor: isPast || isBooked ? 'not-allowed' : 'pointer',
-                      border: isSelected ? '2px solid #0070f3' : undefined,
-                      background: isBooked ? '#b91c1c' : undefined,
-                      color: isBooked ? '#fff' : undefined
-                    }}
-                    onClick={() => {
-                      if (isPast || isBooked) return;
-                      handleDateClick(day);
-                    }}
-                  >
-                    {day.getDate()}
-                    {isBooked && <span style={{ color: '#fff', fontWeight: 'bold' }}> ✗</span>}
-                    {isSelected && <span style={{ color: '#0070f3', fontWeight: 'bold' }}> ✓</span>}
-                  </div>
-                );
-              })}
+              {/* Weekday headers and calendar grid in one parent */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)' }}>
+                {/* Weekday headers: always first row */}
+                {['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(day => (
+                  <div key={day} style={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '0.5rem' }}>{day}</div>
+                ))}
+                {/* Add empty cells for days before the first day of month */}
+                {(() => {
+                  const firstDayOfWeek = calendarDays[0].getDay(); // 0=Sun, 1=Mon...
+                  // We want Monday as first column, so shift Sunday (0) to last
+                  const offset = firstDayOfWeek === 0 ? 6 : firstDayOfWeek - 1;
+                  return Array(offset).fill(null).map((_, i) => <div key={'empty-'+i} />);
+                })()}
+                {calendarDays.map((day, idx) => {
+                  const dateStr = formatDate(day);
+                  const isPast = day < today;
+                  const isBooked = bookedDates.includes(dateStr);
+                  const isSelected = selectedDate && formatDate(selectedDate) === dateStr;
+                  return (
+                    <div
+                      key={idx}
+                      className={`calendar-day${isPast ? ' past' : isBooked ? ' booked' : ' available'}${isSelected ? ' selected' : ''}`}
+                      title={`Date: ${dateStr}\n${isPast ? 'Past date' : isBooked ? 'Already booked' : 'Available'}${isSelected ? '\nSelected' : ''}`}
+                      style={{
+                        cursor: isPast || isBooked ? 'not-allowed' : 'pointer',
+                        border: isSelected ? '2px solid #0070f3' : undefined,
+                        background: isBooked ? '#b91c1c' : undefined,
+                        color: isBooked ? '#fff' : undefined,
+                        textAlign: 'center',
+                        minHeight: '2.5em',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                      }}
+                      onClick={() => {
+                        if (isPast || isBooked) return;
+                        handleDateClick(day);
+                      }}
+                    >
+                      {day.getDate()}
+                      {isBooked && <span style={{ color: '#fff', fontWeight: 'bold' }}> ✗</span>}
+                      {isSelected && <span style={{ color: '#0070f3', fontWeight: 'bold' }}> ✓</span>}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           </div>
 

@@ -82,22 +82,33 @@ const Dashboard = () => {
               <a href="/bookings" className="btn secondary" style={{ marginLeft: '1rem' }}>View All Bookings</a>
               {(() => {
                 // Calculate number of bookings in current week
-                const now = new Date();
-                const startOfWeek = new Date(now);
-                startOfWeek.setDate(now.getDate() - now.getDay());
-                startOfWeek.setHours(0,0,0,0);
-                const endOfWeek = new Date(startOfWeek);
-                endOfWeek.setDate(startOfWeek.getDate() + 6);
-                endOfWeek.setHours(23,59,59,999);
-                const weeklyBookings = (data.bookings || []).filter(b => {
-                  const d = new Date(b.bookingDate);
-                  return d >= startOfWeek && d <= endOfWeek;
-                });
-                if (weeklyBookings.length > 3) {
-                  return <a href="/booking?trial=true" className="btn accent" style={{ marginLeft: '1rem' }}>Book a Free Trial</a>;
-                } else {
-                  return <span className="btn accent disabled" style={{ marginLeft: '1rem', opacity: 0.5, pointerEvents: 'none' }} title="Book more than 3 sessions in a week to unlock free trial">Book a Free Trial</span>;
+                // Group bookings by week number for the current user
+                function getSundayWeek(date) {
+                  // Week starts on Sunday
+                  const d = new Date(date);
+                  const sunday = new Date(d);
+                  sunday.setDate(d.getDate() - d.getDay());
+                  sunday.setHours(0,0,0,0);
+                  // Use year and Sunday date as key
+                  return `${sunday.getFullYear()}-${String(sunday.getMonth()+1).padStart(2,'0')}-${String(sunday.getDate()).padStart(2,'0')}`;
                 }
+                const weekCounts = {};
+                (data.bookings || []).forEach(b => {
+                  const d = new Date(b.bookingDate);
+                  const week = getSundayWeek(d);
+                  weekCounts[week] = (weekCounts[week] || 0) + 1;
+                });
+                const eligible = Object.values(weekCounts).some(count => count >= 3);
+                // Debug output
+                console.log('All bookings:', data.bookings.map(b => b.bookingDate));
+                console.log('Bookings grouped by week:', weekCounts);
+                console.log('Total bookings:', data.bookings.length);
+                if (eligible) {
+                  return <><a href="/booking?trial=true" className="btn accent" style={{ marginLeft: '1rem' }}>Book a Free Trial</a><span style={{marginLeft:'1rem',color:'#0f0'}}>Reward unlocked ({data.bookings.length} bookings, week counts: {JSON.stringify(weekCounts)})</span></>;
+                } else {
+                  return <><span className="btn accent disabled" style={{ marginLeft: '1rem', opacity: 0.5, pointerEvents: 'none' }} title="Book 3+ sessions in any week to unlock free trial">Book a Free Trial</span><span style={{marginLeft:'1rem',color:'#f00'}}>Not eligible ({data.bookings.length} bookings, week counts: {JSON.stringify(weekCounts)})</span></>;
+                }
+                // ...existing code...
               })()}
             </div>
           </div>
