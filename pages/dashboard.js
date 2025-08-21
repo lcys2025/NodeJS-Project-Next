@@ -1,70 +1,56 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import NavBar from '../components/NavBar';
 // ...existing code...
 
-// Mock user and data for demonstration
-const mockUser = {
-  name: 'Alex Chan',
-  role: 'gymer', // Change to 'trainer' to test trainer view
-  plan: 'gold',
-};
-const mockData = {
-  paymentAmount: 1200,
-  paymentStatus: 'Paid',
-  remainingTrainerDays: 5,
-  bookings: [
-    {
-      trainerId: { name: 'Sam Wong' },
-      bookingDate: new Date(),
-      sessionType: 'Cardio',
-      status: 'confirmed',
-    },
-    {
-      trainerId: { name: 'Jane Lee' },
-      bookingDate: new Date(Date.now() + 86400000),
-      sessionType: 'Strength',
-      status: 'pending',
-    },
-  ],
-  trainers: [
-    { name: 'Sam Wong', _id: '1' },
-    { name: 'Jane Lee', _id: '2' },
-  ],
-  calendar: {
-    month: 'August',
-    year: 2025,
-    prevMonth: 7,
-    prevYear: 2025,
-    nextMonth: 9,
-    nextYear: 2025,
-    days: Array.from({ length: 31 }, (_, i) => ({
-      day: i + 1,
-      booked: i % 5 === 0,
-      booking: i % 5 === 0 ? {
-        userId: { name: 'Alex Chan' },
-        sessionType: 'Cardio',
-        status: 'confirmed',
-        _id: 'b' + i,
-      } : null,
-    })),
-  },
-};
+// ...existing code...
+
+
 
 const Dashboard = () => {
-  const user = mockUser;
-  const data = mockData;
+  const [user, setUser] = useState(null);
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('/api/dashboard')
+      .then(res => {
+        if (res.status === 401) {
+          window.location.href = '/login';
+          return null;
+        }
+        return res.json().then(json => ({ status: res.status, json }));
+      })
+      .then(({ status, json }) => {
+        if (status !== 200) {
+          setError(json.error || 'Unknown error');
+        } else if (json && json.user) {
+          setUser(json.user);
+          setData(json);
+        }
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div style={{ color: 'red', padding: '2rem' }}>Error: {error}</div>;
+  if (!user || !data) return null;
 
   return (
     <div>
       <Head>
-  <title>Dashboard - Gym Fitness</title>
+        <title>Dashboard - Gym Fitness</title>
       </Head>
       <NavBar />
       <div className="dashboard-container">
         <h1>Welcome, {user.name}!</h1>
-        <p><strong>Plan:</strong> {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)} - ${data.paymentAmount} ({data.paymentStatus}) <span style={{ float: 'right' }}><strong>Remaining Trainer Days:</strong> {data.remainingTrainerDays}</span></p>
+        <p><strong>Plan:</strong> {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)} <span style={{ float: 'right' }}><strong>Remaining Trainer Days:</strong> {user.remainingTrainerDays}</span></p>
       </div>
 
       {user.role === 'gymer' && (
@@ -76,7 +62,7 @@ const Dashboard = () => {
                 {data.bookings.map((booking, idx) => (
                   <div className="booking-card" key={idx}>
                     <h3>{booking.trainerId.name}</h3>
-                    <p><strong>Date:</strong> {booking.bookingDate.toDateString()}</p>
+                    <p><strong>Date:</strong> {new Date(booking.bookingDate).toLocaleDateString()}</p>
                     <p><strong>Type:</strong> {booking.sessionType}</p>
                     <p><strong>Status:</strong> <span className={`status-${booking.status}`}>{booking.status}</span></p>
                   </div>
@@ -115,39 +101,7 @@ const Dashboard = () => {
 
       {user.role === 'trainer' && (
         <>
-          <div className="dashboard-section">
-            <div className="calendar-navigation" style={{ marginBottom: '1em', display: 'flex', alignItems: 'center' }}>
-              <button className="btn small">Previous</button>
-              <span style={{ margin: '0 1em', flex: 1, textAlign: 'center' }}>
-                <strong>Your Schedule for {data.calendar.month} {data.calendar.year}</strong>
-              </span>
-              <button className="btn small">Next</button>
-            </div>
-            <div className="calendar">
-              {data.calendar.days.map((day, idx) => (
-                <div className={`calendar-day ${day.booked ? 'booked' : 'available'}`} key={idx}>
-                  <div className="day-number">{day.day}</div>
-                  {day.booked && (
-                    <div className="booking-info">
-                      <div>{day.booking.userId.name}</div>
-                      <div>{day.booking.sessionType}</div>
-                      <div className={`status-${day.booking.status}`}>{day.booking.status}</div>
-                      <form className="status-form">
-                        <select name="status">
-                          <option value="pending" selected={day.booking.status === 'pending'}>Pending</option>
-                          <option value="confirmed" selected={day.booking.status === 'confirmed'}>Confirmed</option>
-                          <option value="completed" selected={day.booking.status === 'completed'}>Completed</option>
-                          <option value="cancelled" selected={day.booking.status === 'cancelled'}>Cancelled</option>
-                          <option value="no-show" selected={day.booking.status === 'no-show'}>No Show</option>
-                        </select>
-                      </form>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
+          {/* Calendar picker UI can be implemented here using data.calendar */}
           <div className="dashboard-section">
             <h2>Upcoming Sessions</h2>
             {data.bookings && data.bookings.length > 0 ? (
@@ -164,18 +118,18 @@ const Dashboard = () => {
                 <tbody>
                   {data.bookings.map((booking, idx) => (
                     <tr key={idx}>
-                      <td>{booking.bookingDate.toDateString()}</td>
-                      <td>{booking.trainerId.name}</td>
+                      <td>{new Date(booking.bookingDate).toLocaleDateString()}</td>
+                      <td>{booking.userId ? booking.userId.name : ''}</td>
                       <td>{booking.sessionType}</td>
                       <td className={`status-${booking.status}`}>{booking.status}</td>
                       <td>
                         <form className="status-form">
-                          <select name="status">
-                            <option value="pending" selected={booking.status === 'pending'}>Pending</option>
-                            <option value="confirmed" selected={booking.status === 'confirmed'}>Confirmed</option>
-                            <option value="completed" selected={booking.status === 'completed'}>Completed</option>
-                            <option value="cancelled" selected={booking.status === 'cancelled'}>Cancelled</option>
-                            <option value="no-show" selected={booking.status === 'no-show'}>No Show</option>
+                          <select name="status" defaultValue={booking.status}>
+                            <option value="pending">Pending</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="no-show">No Show</option>
                           </select>
                         </form>
                       </td>
@@ -190,7 +144,7 @@ const Dashboard = () => {
 
           <div className="dashboard-section">
             <h2>Remaining Trainer Days</h2>
-            <p>You have <strong>{data.remainingTrainerDays}</strong> trainer days left.</p>
+            <p>You have <strong>{user.remainingTrainerDays}</strong> trainer days left.</p>
           </div>
         </>
       )}

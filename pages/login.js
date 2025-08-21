@@ -10,7 +10,7 @@ const Login = () => {
     return regex.test(password);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const email = formRef.current.email.value.trim();
     const password = formRef.current.password.value.trim();
@@ -22,8 +22,22 @@ const Login = () => {
       alert('密碼需包含至少8個字元、大小寫字母及數字！');
       return;
     }
-    alert(`歡迎回來，${email}！`);
-    window.location.href = '/dashboard';
+    try {
+      const res = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert(`歡迎回來，${email}！`);
+        window.location.href = '/dashboard';
+      } else {
+        alert('登入失敗: ' + (data.error || '未知錯誤'));
+      }
+    } catch (err) {
+      alert('登入失敗: ' + err.message);
+    }
   }
 
   return (

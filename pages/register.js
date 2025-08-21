@@ -10,7 +10,7 @@ const Register = () => {
     return regex.test(password);
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     const email = formRef.current.email.value.trim();
     const password = formRef.current.password.value.trim();
@@ -27,8 +27,25 @@ const Register = () => {
       alert('兩次輸入的密碼不一致！');
       return;
     }
-    alert(`註冊成功，歡迎加入！`);
-    window.location.href = '/login';
+    // Add plan and role (default values)
+    const plan = 'basic';
+    const role = 'gymer';
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: email.split('@')[0], email, password, plan, role })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert('註冊成功，歡迎加入！');
+        window.location.href = '/login';
+      } else {
+        alert('註冊失敗: ' + (data.error || '未知錯誤'));
+      }
+    } catch (err) {
+      alert('註冊失敗: ' + err.message);
+    }
   }
 
   return (

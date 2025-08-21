@@ -3,14 +3,25 @@ import Head from 'next/head';
 import NavBar from '../components/NavBar';
 
 const Logout = () => {
+  const [auth, setAuth] = React.useState(false);
   React.useEffect(() => {
-    fetch('/api/logout', { method: 'POST' })
-      .then(() => {
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1200);
+    fetch('/api/session')
+      .then(res => {
+        if (res.status === 401) {
+          window.location.href = '/login';
+          return null;
+        }
+        setAuth(true);
+        fetch('/api/logout', { method: 'POST' })
+          .then(() => {
+            setTimeout(() => {
+              window.location.href = '/';
+            }, 1200);
+          });
       });
   }, []);
+
+  if (!auth) return null;
 
   return (
     <div>
