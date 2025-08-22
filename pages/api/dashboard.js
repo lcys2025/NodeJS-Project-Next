@@ -39,9 +39,17 @@ export default async function handler(req, res) {
     if (user.role === 'gymer') {
       trainers = await User.find({ role: 'trainer' }).select('name _id');
     }
+      // Calculate remainingTrainerDays based on plan minus completed bookings
+      let remainingTrainerDays = user.remainingTrainerDays;
+      if (user.role === 'gymer') {
+        const planDefaults = { basic: 5, premium: 15, vip: 30 };
+        const totalDays = planDefaults[user.plan] || 0;
+        const totalBookings = await Booking.countDocuments({ userId: user._id });
+        remainingTrainerDays = Math.max(totalDays - totalBookings, 0);
+      }
     // TODO: Add calendar data logic here
     res.status(200).json({
-  user: { _id: user._id, name: user.name, email: user.email, role: user.role, plan: user.plan, remainingTrainerDays: user.remainingTrainerDays },
+    user: { _id: user._id, name: user.name, email: user.email, role: user.role, plan: user.plan, remainingTrainerDays },
       bookings,
       trainers,
       calendar: null // Placeholder for calendar picker data

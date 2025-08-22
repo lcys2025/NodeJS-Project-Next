@@ -17,6 +17,7 @@ export default async function handler(req, res) {
       }
       const booking = new Booking({ userId, trainerId, bookingDate, sessionType, notes, status: 'pending' });
       await booking.save();
+    // Do NOT decrement remainingTrainerDays here; only decrement on booking confirmation
       return res.status(201).json({ success: true, booking });
     } else if (req.method === 'GET') {
       // List all bookings (for admin/debug)
