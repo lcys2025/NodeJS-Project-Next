@@ -112,14 +112,26 @@ const Booking = () => {
         body: JSON.stringify(bookingPayload)
       });
       const result = await res.json();
-      if (res.status === 201 && result.success) {
-        setStatus('Booking created successfully!');
-        setTimeout(() => {
-          window.location.href = '/dashboard?booking=success';
-        }, 1200);
-      } else {
-        setStatus(result.error || 'Booking failed');
-      }
+        if (res.status === 201 && result.success) {
+          setStatus('Booking created successfully!');
+          setTimeout(() => {
+            window.location.href = '/dashboard?booking=success';
+          }, 1200);
+        } else if (res.status === 409) {
+          // Specific error for trainer or user availability
+          if (result.error === 'Selected trainer is not available on this date.') {
+            alert('Error: The selected trainer is not available on this date. Please choose another date or trainer.');
+            setStatus('Trainer not available on this date.');
+          } else if (result.error === 'You have already booked a session on this date.') {
+            alert('Error: You have already booked a session on this date.');
+            setStatus('You already have a booking on this date.');
+          } else {
+            alert('Error: ' + (result.error || 'Booking failed.'));
+            setStatus(result.error || 'Booking failed.');
+          }
+        } else {
+          setStatus(result.error || 'Booking failed');
+        }
     } catch (err) {
       setStatus('Booking failed: ' + err.message);
     }

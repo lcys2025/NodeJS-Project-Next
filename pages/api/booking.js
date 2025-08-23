@@ -15,6 +15,16 @@ export default async function handler(req, res) {
       if (!userId || !trainerId || !bookingDate || !sessionType) {
         return res.status(400).json({ error: 'Missing required fields' });
       }
+        // Check if the date is already booked for this trainer
+        const trainerBooking = await Booking.findOne({ trainerId, bookingDate });
+        if (trainerBooking) {
+          return res.status(409).json({ error: 'Selected trainer is not available on this date.' });
+        }
+        // Check if the user has already booked this date
+        const userBooking = await Booking.findOne({ userId, bookingDate });
+        if (userBooking) {
+          return res.status(409).json({ error: 'You have already booked a session on this date.' });
+        }
       const booking = new Booking({ userId, trainerId, bookingDate, sessionType, notes, status: 'pending' });
       await booking.save();
     // Do NOT decrement remainingTrainerDays here; only decrement on booking confirmation
