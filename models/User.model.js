@@ -30,37 +30,44 @@ const userSchema = new mongoose.Schema(
 			type: String,
 			required: true,
 			lowercase: true,
-			enum: ['basic', 'premium', 'vip'],
+			enum: ['basic', 'premium', 'vip', 'other'],
+			default: 'gymer',
 		},
 		role: {
 			type: String,
-			required: false,
+			required: true,
 			lowercase: true,
 			enum: ['gymer', 'trainer'],
 			default: 'gymer',
 		},
 		remainingTrainerDays: {
 			type: Number,
-			required: true,
+			required: false,
 			default: 0,
 		},
 		payment: {
 			amount: {
 				type: Number,
-				required: true,
-				min: 0,
-				default: 0
+				required: false,
+				default: 0,
 			},
 			currency: {
 				type: String,
-				default: 'USD'
+				required: false,
+				default: 'HKD',
 			},
 			status: {
 				type: String,
-				enum: ['pending', 'paid', 'refunded', 'failed'],
-				default: 'paid'
+				required: false,
+				enum: ['pending', 'confirmed', 'refunded', 'paid'],
+				default: 'confirmed',
 			},
-			method: String
+			method: {
+				type: String,
+				required: false,
+				enum: ['cash', 'credit card', 'bank account', 'cheque'],
+				default: 'cash',
+			},
 		},
 	},
 	{

@@ -2,11 +2,6 @@
 import React, { useState, useEffect } from 'react';
 import Head from 'next/head';
 import NavBar from '../components/NavBar';
-// ...existing code...
-
-// ...existing code...
-
-
 
 const Dashboard = () => {
   const [user, setUser] = useState(null);
@@ -52,7 +47,7 @@ const Dashboard = () => {
       <NavBar />
       <div className="dashboard-container">
         <h1>Welcome, {user.name}!</h1>
-        <p><strong>Plan:</strong> {user.plan.charAt(0).toUpperCase() + user.plan.slice(1)} <span style={{ float: 'right' }}><strong>Remaining Trainer Days:</strong> {user.remainingTrainerDays}</span></p>
+        <p><span><strong>Plan:</strong> { user.plan.charAt(0).toUpperCase() + user.plan.slice(1) }</span>&nbsp;&nbsp;&nbsp;<span><strong>Amount: </strong> HK$ { user.amount }</span>&nbsp;&nbsp;&nbsp;<span><strong>Status:</strong> { user.payment.status }</span> <span style={{ float: 'right' }}><strong>Remaining Trainer Days:</strong> {user.remainingTrainerDays}&nbsp;&nbsp;&nbsp;<strong>Reward:</strong> {user.reward}</span></p>
       </div>
 
       {user.role === 'gymer' && (
@@ -98,17 +93,15 @@ const Dashboard = () => {
                   const week = getSundayWeek(d);
                   weekCounts[week] = (weekCounts[week] || 0) + 1;
                 });
-                const eligible = Object.values(weekCounts).some(count => count >= 3);
                 // Debug output
                 console.log('All bookings:', data.bookings.map(b => b.bookingDate));
                 console.log('Bookings grouped by week:', weekCounts);
                 console.log('Total bookings:', data.bookings.length);
-                if (eligible) {
-                  return <><a href="/booking?trial=true" className="btn accent" style={{ marginLeft: '1rem' }}>Book a Free Trial</a><span style={{marginLeft:'1rem',color:'#0f0'}}>Reward unlocked ({data.bookings.length} bookings, week counts: {JSON.stringify(weekCounts)})</span></>;
+                if (user.reward == 'available') {
+                  return <><a href="/booking?trial=true" className="btn accent" style={{ marginLeft: '1rem' }}>Book a Free Session as Reward</a><span style={{marginLeft:'1rem',color:'#0f0'}}>Reward unlocked ({data.bookings.length} bookings, week counts: {JSON.stringify(weekCounts)})</span></>;
                 } else {
                   return <><span className="btn accent disabled" style={{ marginLeft: '1rem', opacity: 0.5, pointerEvents: 'none' }} title="Book 3+ sessions in any week to unlock free trial">Book a Free Trial</span><span style={{marginLeft:'1rem',color:'#f00'}}>Not eligible ({data.bookings.length} bookings, week counts: {JSON.stringify(weekCounts)})</span></>;
                 }
-                // ...existing code...
               })()}
             </div>
           </div>

@@ -15,8 +15,13 @@ const Register = () => {
     const email = formRef.current.email.value.trim();
     const password = formRef.current.password.value.trim();
     const confirmPassword = formRef.current.confirmPassword.value.trim();
+    const plan = formRef.current.plan.value.trim();
+    if (!plan) {
+      alert('請輸入 plan！');
+      return;
+    }
     if (!email || !password || !confirmPassword) {
-      alert('請輸入 Email 和密碼！');
+      alert('請輸入 Email 和 密碼！');
       return;
     }
     if (!isValidPassword(password)) {
@@ -27,8 +32,7 @@ const Register = () => {
       alert('兩次輸入的密碼不一致！');
       return;
     }
-    // Add plan and role (default values)
-    const plan = 'basic';
+    // Add role (default values)
     const role = 'gymer';
     try {
       const res = await fetch('/api/register', {
@@ -66,9 +70,20 @@ const Register = () => {
           <img src="/pic/fitness3.jpg" alt="Membership" className="rounded-xl shadow-lg object-cover w-full h-64" />
           <div className="bg-white bg-opacity-10 rounded-xl p-8 shadow-lg flex flex-col gap-6">
             <form id="registerForm" ref={formRef} onSubmit={handleSubmit}>
-              <input type="email" name="email" id="email" placeholder="Email" className="rounded px-4 py-3 bg-gray-900 text-white border border-red-600" required />
-              <input type="password" name="password" id="password" placeholder="Password" className="rounded px-4 py-3 bg-gray-900 text-white border border-red-600" required />
-              <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" className="rounded px-4 py-3 bg-gray-900 text-white border border-red-600" required />
+              <div>
+                <select name="plan" id="plan">
+                  <option value="basic">Basic Plan - $100/month with 5 trainer days</option>
+                  <option value="premium">Premium Plan - $150/month with 10 trainer days</option>
+                  <option value="vip">VIP Plan - $200/month with 20 trainer days</option>
+                </select>
+              </div>
+              <div>
+                <input type="email" name="email" id="email" placeholder="Email" className="rounded px-4 py-3 bg-gray-900 text-white border border-red-600" required />
+              </div>
+              <div>
+                <input type="password" name="password" id="password" placeholder="Password" className="rounded px-4 py-3 bg-gray-900 text-white border border-red-600" required />
+                <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm Password" className="rounded px-4 py-3 bg-gray-900 text-white border border-red-600" required />
+              </div>
               <button type="submit" className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full shadow transition">Register</button>
             </form>
             <p className="mt-6 text-gray-300">Already have an account? <a href="/login" className="text-red-400 hover:text-red-600 font-semibold">Login</a></p>
